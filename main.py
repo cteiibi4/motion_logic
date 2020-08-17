@@ -9,6 +9,7 @@ from common.common import MOSCOW_LATITUDE, MOSCOW_LONGITUDE, MOSCOW_RADIUS, R_EA
 
 
 def create_bk_rest():
+    """ This function parsed burger king sites, create objects restaurant and add in base"""
     restaurant_chain = 'BK'
     response = requests.get('https://burgerking.ru/restaurant-locations-json-reply-new/')
     rough_response = response.text[2:-2:1].split('},{')
@@ -24,6 +25,7 @@ def create_bk_rest():
 
 
 def create_kfc_rest():
+    """ This function parsed kfc sites, create objects restaurant and add in base"""
     restaurant_chain = 'KFC'
     store_id = 0
     response = requests.get('https://www.kfc.ru/restaurants')
@@ -46,6 +48,10 @@ def create_kfc_rest():
 
 
 def calculate_distance(latitude1, longitude1, latitude2, longitude2):
+    """
+    This function wait latitude and longitude from 2 point
+    and calculated distance
+    """
     # translate coordinates in radians
     lat1 = latitude1 * math.pi / 180
     lat2 = latitude2 * math.pi / 180
@@ -69,6 +75,10 @@ def calculate_distance(latitude1, longitude1, latitude2, longitude2):
 
 
 def find_rivals(restaurant_chain):
+    """
+    Take coordinates restaurants from base
+    and calculate how more rivals for this restaurant from other chain
+     """
     conn = sqlite3.connect('restaurants.db')
     cursor = conn.cursor()
     sql = 'SELECT * FROM restaurants WHERE restaurant_chain=?'
@@ -98,6 +108,7 @@ def find_rivals(restaurant_chain):
 
 
 def color_for_markers(number):
+    # Just assign color for marker
     if number <= len(COLORS):
         return COLORS[number]
     else:
@@ -105,6 +116,7 @@ def color_for_markers(number):
 
 
 def crete_table():
+    # Create table for restaurants in base
     conn = sqlite3.connect('restaurants.db')
     cursor = conn.cursor()
     sql = cursor.execute("""CREATE TABLE restaurants
@@ -115,12 +127,14 @@ def crete_table():
 
 
 def drop_table():
+    # Delete table from base
     conn = sqlite3.connect('restaurants.db')
     cursor = conn.cursor()
     cursor.execute('DROP table if exists restaurants')
 
 
 def crete_map():
+    """Create map and markers"""
     moscow_map = folium.Map(location=[MOSCOW_LATITUDE, MOSCOW_LONGITUDE], zoom_start=11)
     conn = sqlite3.connect('restaurants.db')
     cursor = conn.cursor()

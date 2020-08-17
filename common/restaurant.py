@@ -2,7 +2,9 @@ import sqlite3
 
 
 class Restaurant:
-
+    """
+    Class for restaurant object
+    """
     def __init__(self, store_id, latitude, longitude, restaurant_chain):
         self.store_id = store_id
         self.latitude = latitude
@@ -17,13 +19,3 @@ class Restaurant:
         cursor.execute("""INSERT INTO restaurants
                        VALUES (?,?,?,?,?)""", values)
         conn.commit()
-        # try:
-        #     cursor.execute("""INSERT INTO restaurants
-        #           VALUES (?,?,?,?,?)""", values)
-        #     conn.commit()
-        # except:
-        #     update_sql = '''UPDATE restaurants
-        #         SET rivals = 0, latitude = ?, longitude = ?
-        #         WHERE store_id = ?'''
-        #     values_update = (self.latitude, self.longitude, self.store_id)
-        #     cursor.execute(update_sql, values_update)
