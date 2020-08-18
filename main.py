@@ -109,17 +109,17 @@ def find_rivals(restaurant_chain):
 
 def color_for_markers(number):
     # Just assign color for marker
-    if number <= len(COLORS):
+    if number < len(COLORS):
         return COLORS[number]
     else:
         return ('black')
 
 
-def crete_table():
+def create_table():
     # Create table for restaurants in base
     conn = sqlite3.connect('restaurants.db')
     cursor = conn.cursor()
-    sql = cursor.execute("""CREATE TABLE restaurants
+    sql = cursor.execute("""CREATE TABLE if not exists restaurants
     (store_id integer, latitude numeric, longitude numeric,
      restaurant_chain text, rivals integer)"""
                          )
@@ -133,7 +133,15 @@ def drop_table():
     cursor.execute('DROP table if exists restaurants')
 
 
-def crete_map():
+def clear_table():
+    # Delete all from table
+    conn = sqlite3.connect('restaurants.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM restaurants')
+    conn.commit()
+
+
+def create_map():
     """Create map and markers"""
     moscow_map = folium.Map(location=[MOSCOW_LATITUDE, MOSCOW_LONGITUDE], zoom_start=11)
     conn = sqlite3.connect('restaurants.db')
@@ -147,9 +155,9 @@ def crete_map():
 
 
 if __name__ == '__main__':
-    crete_table()
+    create_table()
     create_bk_rest()
     create_kfc_rest()
     find_rivals('BK')
-    crete_map()
-    drop_table()
+    create_map()
+    clear_table()
